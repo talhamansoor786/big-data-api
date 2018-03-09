@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fetch Json Data</title>
+  <link href='https://fonts.googleapis.com/css?family=Roboto:400,500' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body ng-controller="controller">
+	<main>
+		<div class="page-top clearfix">
+		   <a href="" class="al-logo clearfix">Fetch Json Data</a>
+		</div>
+		  <div class="al-main">
+			<div class="al-content">
+				<div>
+					<div class="content-top clearfix">
+						<h1 class="al-title">List</h1>
+					</div>
+				</div>
+				<div class="userbase clearfix pendingtask userlist">
+					<div class="clearfix">
+						<div class="pending-table">
+							<div class="clearfix list-items">
+								<ul>
+									<li style="position:relative;top:-2px;">
+										<nav aria-label="Page navigation" style="text-align:center">
+										  <ul class="pagination clearfix">
+											<li class="page-item" ng-class="{'disabled': pn == 1}">
+											  <a class="page-link" aria-label="Previous" ng-click="goToPage('prev');">
+												<span aria-hidden="true">&laquo;</span>
+											  </a>
+											</li>
+											<li class="page-item" ng-repeat="number in numberFunc track by $index" ng-class="{'active': number+1 == pn}">
+												<a class="page-link" ng-click="goToPage(number+1);">{{number+1}}</a>
+											</li>
+											<li class="page-item" ng-class="{'disabled': newArr.length-1 == pn}">
+											  <a class="page-link" aria-label="Next" ng-click="goToPage('next');">
+												<span aria-hidden="true">&raquo;</span>
+											  </a>
+											</li>
+										  </ul>
+										</nav>
+									</li>
+								</ul>
+							</div>
+							<div class="with-scroll table-panel">
+							   <div class="panel with-scroll table-panel animated zoomIn">
+								  <div class="panel-body">
+									 <div class="ng-scope">
+										<div class="table-responsive">
+										   <table class="table table-striped">
+												<thead>
+													<tr>
+														<th>S. No.</th>
+														<th>Name</th>
+														<th>Description</th>
+														<th>Elements</th>
+														<th>Type</th>
+													</tr>
+												</thead>
+												<tbody ng-repeat="list in data track by $index | limitTo:pageSize">
+													 <tr>
+														<td>{{$index+1}}</td>
+														<td>{{list.name}}</td>
+														<td>{{list.description}}</td>
+														<td ng-show="list.type.name=='Number' || list.type.name=='Date' || list.type.name=='Institution'">
+															NA
+														</td>
+														<td ng-show="list.type.name!='Number' && list.type.name!='Date' && list.type.name!='Institution'">
+															<div class="click-cl">Click to View</div>
+														</td>
+														<td>
+															<span>{{list.type.name}}</span>
+														</td>
+													 </tr>
+														<tr ng-if="list.type.name=='Course'">
+															<td colspan="5" class="new-tr">
+																<div class="modal-h" style="display:none;">
+																	<table class="table table-striped">
+																		<tr>
+																			<th>Duration</th>
+																			<th>Eligibility</th>
+																			<th ng-if="elem.value.institutions.length > 0">Institution</th>
+																			<th>Long Name</th>
+																			<th>Short Name</th>
+																		</tr>
+																		<tr ng-repeat="elem in list.elements track by $index">
+																			<td>{{elem.value.duration}}</td>
+																			<td>{{elem.value.eligibility}}</td>
+																			<td ng-if="elem.value.institutions.length > 0" ng-repeat="institution in elem.value.institutions track by $index">{{institution}}</td>
+																			<td>{{elem.value.long_name}}</td>
+																			<td>{{elem.value.short_name}}</td>
+																		</tr>
+																	</table>
+																</div>
+															</td>
+														</tr>
+														<tr ng-if="list.type.name=='Geographical Location (City)'">
+															<td colspan="5" class="new-tr">
+																<div class="modal-h" style="display:none;">
+																	<table class="table table-striped">
+																		<tr>
+																			<th>City</th>
+																			<th>Country</th>
+																			<th>State</th>
+																			<th>a</th>
+																			<th>a</th>
+																		</tr>
+																		<tr ng-repeat="city in list.elements track by $index">
+																			<td>{{city.value.city}}</td>
+																			<td>{{city.value.country}}</td>
+																			<td>{{city.value.state}}</td>
+																			<td>a</td>
+																			<td>a</td>
+																		</tr>
+																	</table>
+																</div>
+															</td>
+														</tr>
+														<tr ng-if="list.type.name=='Geographical Location (Country)'">
+															<td colspan="5" class="new-tr">
+																<div class="modal-h" style="display:none;">
+																	<table class="table table-striped">
+																		<tr>
+																			<th>Country</th>
+																		</tr>
+																		<tr ng-repeat="country in list.elements track by $index">
+																			<td>{{country.value.country}}</td>
+																		</tr>
+																	</table>
+																</div>
+															</td>
+														</tr>
+														<tr ng-if="list.type.name=='Geographical Location (State)'">
+															<td colspan="5" class="new-tr">
+																<div class="modal-h" style="display:none;">
+																	<table class="table table-striped">
+																		<tr>
+																			<th>Country</th>
+																			<th>State</th>
+																		</tr>
+																		<tr ng-repeat="state in list.elements track by $index">
+																			<td>{{state.value.country}}</td>
+																			<td>{{state.value.state}}</td>
+																		</tr>
+																	</table>
+																</div>
+															</td>
+														</tr>
+														<tr ng-if="list.type.name=='String'">
+															<td colspan="5" class="new-tr">
+																<div class="modal-h" style="display:none;">
+																	<table class="table table-striped">
+																		<tr>
+																			<th>{{list.description}}</th>
+																		</tr>
+																		<tr ng-repeat="string in list.elements track by $index">
+																			<td>{{string.value}}</td>
+																		</tr>
+																	</table>
+																</div>
+															</td>
+														</tr>
+														<tr ng-if="list.type.name=='Boolean'">
+															<td colspan="5" class="new-tr">
+																<div class="modal-h" style="display:none;">
+																	<table class="table table-striped">
+																		<tr ng-repeat="boolean in list.elements track by $index">
+																			<td>{{boolean.value}}</td>
+																		</tr>
+																	</table>
+																</div>
+															</td>
+														</tr>
+													 </tr>
+												</tbody>
+										   </table>
+										</div>
+									 </div>
+								  </div>
+							   </div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		  </div>
+	</main>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.10/angular.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="js/app.js" type="text/javascript"></script>
+	<script src="js/controller.js" type="text/javascript"></script>
+</body>
+</html>
